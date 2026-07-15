@@ -1,6 +1,6 @@
 <script>
-    import { Icon, PlusSm } from "svelte-hero-icons";
-    import {useForm} from "@inertiajs/inertia-svelte";
+    import { Icon, PlusSmall } from "svelte-hero-icons";
+    import {useForm} from "@inertiajs/svelte";
     import Modal from "./Modal.svelte";
     import FormField from "./FormField.svelte";
     import RecordForm from "@/RecordForm.svelte";
@@ -28,31 +28,20 @@
         if(!valid || $form.processing) return;
         $form.post(`/${section.site_id}/section/${section.id}/data`, {preserveScroll: true, onSuccess: modal.close});
     }
-
-
-    function keydown(event) {
-        const target = event.target;
-        if (target.dataset.field) {
-            $form.clearErrors(target.dataset.field);
-        } else if (target.name) {
-            $form.clearErrors(target.name);
-        }
-    }
-
 </script>
 
-<form method="post" on:submit|preventDefault={submit} on:keydown="{keydown}">
+<form method="post" on:submit|preventDefault={submit}>
     <Modal title="Add Record" size="xl" bind:this={modal} on:closed={() => $form.reset()}>
         <div let:open={open} slot="trigger">
-            <button on:click={open} type="button" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                <Icon src="{PlusSm}" class="w-5 h-5" />
+            <button on:click={open} type="button" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <Icon src="{PlusSmall}" class="w-5 h-5" />
                 <span class="ml-2 hidden sm:inline">Add <span class="hidden md:inline">Record</span></span>
             </button>
         </div>
         <div slot="submit">
             <button type="submit"
                     disabled={$form.processing || !valid}
-                    class="{valid ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-400'} w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    class="{valid ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-400'} w-full inline-flex justify-center rounded-md border border-transparent shadow-xs px-4 py-2  text-base font-medium text-white  focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                 Save
             </button>

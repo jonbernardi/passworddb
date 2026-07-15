@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
 use App\Http\Requests\Site\AddSiteRequest;
 use App\Http\Requests\Site\UpdateSiteRequest;
 use App\Models\Site;
+use Inertia\Inertia;
 
 class SiteController extends Controller
 {
     public function index()
     {
         $records = Site::select('id', 'name', 'domain', 'url')->orderBy('name')->get();
+
         return Inertia::render('Sites', compact('records'));
     }
 
@@ -38,7 +39,6 @@ class SiteController extends Controller
 
         return redirect()->route('site', $site);
     }
-
 
     public function destroy(Site $site)
     {

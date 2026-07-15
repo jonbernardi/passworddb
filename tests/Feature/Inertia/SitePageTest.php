@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Inertia;
 
-use Tests\TestCase;
-use App\Models\Site;
 use App\Models\Data;
 use App\Models\Section;
-use Inertia\Testing\Assert;
+use App\Models\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
+use Tests\TestCase;
 
 class SitePageTest extends TestCase
 {
@@ -32,47 +32,47 @@ class SitePageTest extends TestCase
         ]]);
 
         $this->get("/{$site->id}")
-             ->assertInertia(fn (Assert $page) => $page
-                 ->component('Site')
-                 ->has('site', fn (Assert $page) => $page
-                     ->where('id', $site->id)
-                     ->where('name', $site->name)
-                     ->where('domain', $site->domain)
-                     ->where('url', $site->url)
-                     ->where('notes', $site->notes)
-                     ->etc()
-                     ->has('sections', 2)
-                     ->has('sections.0', fn (Assert $page) => $page
-                         ->where('id', $section->id)
-                         ->where('name', $section->name)
-                         ->etc()
-                         ->has('data', 1)
-                         ->has('data.0', fn (Assert $page) => $page
-                             ->where('id', $record->id)
-                             ->where('name', $record->name)
-                             ->etc()
-                             ->has('data', 2)
-                             ->has('data.0', fn (Assert $page) => $page
-                                 ->where('name', 'username')
-                                 ->where('value', 'Bob')
-                                 ->where('type', 'text')
-                                 ->etc()
-                             )
-                             ->has('data.1', fn (Assert $page) => $page
-                                 ->where('name', 'password')
-                                 ->where('value', 'pa$$')
-                                 ->where('type', 'text')
-                                 ->etc()
-                             )
-                         )
-                     )
-                     ->has('sections.1', fn (Assert $page) => $page
-                         ->where('id', $section2->id)
-                         ->where('name', $section2->name)
-                         ->has('data', 0)
-                         ->etc()
-                     )
-                 )
-             );
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Site')
+                ->has('site', fn (AssertableInertia $page) => $page
+                    ->where('id', $site->id)
+                    ->where('name', $site->name)
+                    ->where('domain', $site->domain)
+                    ->where('url', $site->url)
+                    ->where('notes', $site->notes)
+                    ->etc()
+                    ->has('sections', 2)
+                    ->has('sections.0', fn (AssertableInertia $page) => $page
+                        ->where('id', $section->id)
+                        ->where('name', $section->name)
+                        ->etc()
+                        ->has('data', 1)
+                        ->has('data.0', fn (AssertableInertia $page) => $page
+                            ->where('id', $record->id)
+                            ->where('name', $record->name)
+                            ->etc()
+                            ->has('data', 2)
+                            ->has('data.0', fn (AssertableInertia $page) => $page
+                                ->where('name', 'username')
+                                ->where('value', 'Bob')
+                                ->where('type', 'text')
+                                ->etc()
+                            )
+                            ->has('data.1', fn (AssertableInertia $page) => $page
+                                ->where('name', 'password')
+                                ->where('value', 'pa$$')
+                                ->where('type', 'text')
+                                ->etc()
+                            )
+                        )
+                    )
+                    ->has('sections.1', fn (AssertableInertia $page) => $page
+                        ->where('id', $section2->id)
+                        ->where('name', $section2->name)
+                        ->has('data', 0)
+                        ->etc()
+                    )
+                )
+            );
     }
 }

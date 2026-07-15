@@ -1,5 +1,5 @@
 <script>
-    import {Icon, Check, X} from "svelte-hero-icons";
+    import {Icon, Check, XMark} from "svelte-hero-icons";
 
     export let record;
 </script>
@@ -13,7 +13,7 @@
             {#if record.value}
                 <Icon src="{Check}" class="w-5 h-5 text-green-400"/>
             {:else}
-                <Icon src="{X}" class="w-5 h-5 text-red-400"/>
+                <Icon src="{XMark}" class="w-5 h-5 text-red-400"/>
             {/if}
         {:else if record.type === 'html'}
             {@html record.value}

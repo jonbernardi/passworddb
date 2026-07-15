@@ -1,1 +1,0 @@
-(self.webpackChunk=self.webpackChunk||[]).push([[195],{6195:(e,l,n)=>{"use strict";n.r(l),n.d(l,{default:()=>c});var r=n(5166);const u={layout:n(5590).Z,props:{},render:function(e,l,n,u,c,o){return(0,r.openBlock)(),(0,r.createBlock)("div",null," hello ")}},c=u}}]);

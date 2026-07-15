@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Arr;
-use Spatie\EloquentSortable\Sortable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
+use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Data extends Model implements Sortable
 {
@@ -16,7 +15,7 @@ class Data extends Model implements Sortable
     protected $guarded = [];
 
     public $sortable = [
-        'order_column_name'  => 'sort',
+        'order_column_name' => 'sort',
         'sort_when_creating' => true,
     ];
 
@@ -29,24 +28,23 @@ class Data extends Model implements Sortable
     }
 
     /**
-     * @param array|null $value
-     *
+     * @param  array|null  $value
      * @return array
      */
     public function getDataAttribute($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             return [];
         }
 
         return array_values(
             collect(json_decode(Crypt::decryptString($value), true))
                 ->map(function ($record, $key) {
-                    if (!is_array($record)) {
+                    if (! is_array($record)) {
                         return [
-                            'name'  => $key,
+                            'name' => $key,
                             'value' => trim($record) !== '' ? trim($record) : null,
-                            'type'  => 'text',
+                            'type' => 'text',
                         ];
                     }
 
@@ -58,21 +56,21 @@ class Data extends Model implements Sortable
     }
 
     /**
-     * @param array|null $value
+     * @param  array|null  $value
      */
     public function setDataAttribute($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             $value = [];
         }
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new \InvalidArgumentException('Invalid data value');
         }
         $this->attributes['data'] = Crypt::encryptString(
             json_encode(
                 array_values(
                     collect($value)
-                        ->map(fn($record) => $this->normalizeValue($record))
+                        ->map(fn ($record) => $this->normalizeValue($record))
                         ->filter()
                         ->toArray()
                 )
@@ -90,17 +88,17 @@ class Data extends Model implements Sortable
         if (empty($record['name'])) {
             return null;
         }
-        $type  = $record['type'] ?? 'text';
+        $type = $record['type'] ?? 'text';
         $value = $record['value'];
         if (in_array($type, ['boolean', 'checkbox'])) {
-            $type  = 'boolean';
-            $value = (bool)$record['value'];
+            $type = 'boolean';
+            $value = (bool) $record['value'];
         }
         if (in_array($type, ['number', 'integer'])) {
-            $value = (int)$record['value'];
+            $value = (int) $record['value'];
         }
         if (in_array($type, ['float', 'decimal'])) {
-            $value = (float)$record['value'];
+            $value = (float) $record['value'];
         }
         if (in_array($type, ['text', 'line'])) {
             $value = trim(preg_replace('/\s+/', ' ', $record['value']));
@@ -113,9 +111,9 @@ class Data extends Model implements Sortable
         }
 
         return [
-            'name'  => $record['name'],
+            'name' => $record['name'],
             'value' => $value,
-            'type'  => $type,
+            'type' => $type,
         ];
     }
 }

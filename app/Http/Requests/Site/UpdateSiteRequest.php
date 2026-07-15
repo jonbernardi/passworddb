@@ -27,7 +27,7 @@ class UpdateSiteRequest extends FormRequest
             'name' => ['required', 'max:191'],
             'domain' => ['nullable', 'max:191'],
             'url' => ['nullable', 'url', 'max:191'],
-            'notes' => ['nullable']
+            'notes' => ['nullable'],
         ];
     }
 }

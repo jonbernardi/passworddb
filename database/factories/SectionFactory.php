@@ -1,8 +1,9 @@
 <?php
+
 namespace Database\Factories;
 
-use App\Models\Site;
 use App\Models\Section;
+use App\Models\Site;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SectionFactory extends Factory
@@ -23,7 +24,7 @@ class SectionFactory extends Factory
     {
         return [
             'name' => $this->faker->text(100),
-            'site_id' => fn() => Site::factory()->create()->id,
+            'site_id' => fn () => Site::factory()->create()->id,
             'sort' => null,
         ];
     }

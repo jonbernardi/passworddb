@@ -1,18 +1,24 @@
-import { App } from '@inertiajs/inertia-svelte'
-import Layout from './components/Layout.svelte'
-const el = document.getElementById('app')
+import '../css/app.css';
+import { createInertiaApp } from '@inertiajs/svelte';
+import { mount } from 'svelte';
+import Layout from './components/Layout.svelte';
 
-new App({
-    target: el,
-    props: {
-        initialPage: JSON.parse(el.dataset.page),
-        // resolveComponent: name => require(`./Pages/${name}.svelte`),
-        resolveComponent: name => import(`./Pages/${name}.svelte`)
-            .then(page => {
-                if (page.layout === undefined) {
-                    page.layout = Layout
-                }
-                return page
-            }),
+const pages = import.meta.glob('./Pages/**/*.svelte');
+
+createInertiaApp({
+    resolve: async (name) => {
+        const page = await pages[`./Pages/${name}.svelte`]();
+
+        if (page.default.layout === undefined) {
+            page.default.layout = Layout;
+        }
+
+        return page;
     },
-})
+    setup({ el, App, props }) {
+        mount(App, {
+            target: el,
+            props,
+        });
+    },
+});

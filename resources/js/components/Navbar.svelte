@@ -1,13 +1,13 @@
 <script>
-    import {InertiaLink} from '@inertiajs/inertia-svelte'
+    import { Link } from '@inertiajs/svelte'
 </script>
 
-<header class="mb-6 bg-indigo-900 shadow-sm">
+<header class="mb-6 bg-indigo-900 shadow-xs">
     <div class="container mx-auto">
         <div class="text-center py-6">
-                <InertiaLink href="/">
+                <Link href="/">
                     <div class="font-bold text-white text-3xl">Password Database</div>
-                </InertiaLink>
+                </Link>
         </div>
     </div>
 </header>

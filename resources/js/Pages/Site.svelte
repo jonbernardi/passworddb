@@ -1,6 +1,6 @@
 <script>
-    import {InertiaLink} from '@inertiajs/inertia-svelte'
-    import {Icon, ArrowSmLeft} from "svelte-hero-icons";
+    import { Link } from '@inertiajs/svelte'
+    import {Icon, ArrowSmallLeft} from "svelte-hero-icons";
     import EditSite from '@/EditSite.svelte';
     import DeleteSite from '@/DeleteSite.svelte';
     import AddSection from '@/AddSection.svelte';
@@ -16,11 +16,11 @@
             </h1>
         </div>
         <div class="mt-4 flex md:mt-0 md:ml-4 space-x-4">
-            <InertiaLink href="/"
-                         class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <Icon src="{ArrowSmLeft}" class="w-5 h-5"/>
+            <Link href="/"
+                         class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-xs text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Icon src="{ArrowSmallLeft}" class="w-5 h-5"/>
                 <span class="ml-2">Back</span>
-            </InertiaLink>
+            </Link>
             <DeleteSite site="{site}" />
         </div>
     </div>

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Site extends Model
 {
@@ -21,16 +21,13 @@ class Site extends Model
     }
 
     /**
-     * @param Builder $query
-     * @param string  $search
-     *
      * @return mixed
      */
     public function scopeSearch(Builder $query, string $search = '')
     {
         return $query->where(function ($query) use ($search) {
-            $query->where('name', 'LIKE', '%' . $search . '%');
-            $query->orWhere('domain', 'LIKE', '%' . $search . '%');
+            $query->where('name', 'LIKE', '%'.$search.'%');
+            $query->orWhere('domain', 'LIKE', '%'.$search.'%');
         });
     }
 }

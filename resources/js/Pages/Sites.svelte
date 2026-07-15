@@ -1,14 +1,21 @@
 <script>
     import {filter} from 'fuzzy-tools';
-    import sortBy from 'lodash/sortBy';
     import FormInput from "@/FormInput.svelte";
-    import {InertiaLink} from '@inertiajs/inertia-svelte'
+    import { Link } from '@inertiajs/svelte'
     import AddSite from "../components/AddSite.svelte";
 
     export let records = [];
 
     let url = new URLSearchParams(window.location.search);
     let search = url.get('s') || '';
+
+    function sortByName(items) {
+        return [...items].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function sortByScore(items) {
+        return [...items].sort((a, b) => a.score - b.score);
+    }
 
     $: sites = (() => {
         let url = new URL(window.location.href);
@@ -17,14 +24,14 @@
                 url.searchParams.delete('s');
                 window.history.replaceState({search}, '', url);
             }
-            return sortBy(records, 'name');
+            return sortByName(records);
         }
         if ((url.searchParams.get('s') || '') !== search) {
             url.searchParams.set('s', search)
             window.history.replaceState({search}, '', url);
         }
 
-        return sortBy(filter(search, records, {
+        return sortByScore(filter(search, records, {
             extract: ['name', 'domain'],
             withWrapper: '<em class="font-bold text-yellow-500">{?}</em>',
             itemWrapper: (item, m) => {
@@ -38,7 +45,7 @@
                     domain: m.matches?.domain?.wrapped || item.domain
                 };
             }
-        }), 'score');
+        }));
     })();
 
     function refresh(){
@@ -79,11 +86,11 @@
             {#each sites as site}
                 <tr>
                     <td>
-                        <InertiaLink href="{`/${site.id}`}" title="Details"
-                                     class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        <Link href="{`/${site.id}`}" title="Details"
+                                     class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             Details
-                        </InertiaLink>
+                        </Link>
                     </td>
                     <td>
                         <div class="font-bold">{@html site.name}</div>
@@ -104,5 +111,3 @@
         </div>
     {/if}
 </div>
-
-

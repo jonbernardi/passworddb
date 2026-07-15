@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class EditSiteTest extends TestCase
 {
@@ -42,8 +42,7 @@ class EditSiteTest extends TestCase
         ]);
 
         $response->assertStatus(302)
-                 ->assertSessionHasErrors(['name'])
-        ;
+            ->assertSessionHasErrors(['name']);
 
         $this->assertDatabaseHas('sites', [
             'id' => $site->id,

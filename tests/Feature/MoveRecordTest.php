@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Site;
 use App\Models\Data;
 use App\Models\Section;
+use App\Models\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class MoveRecordTest extends TestCase
 {
@@ -16,9 +16,9 @@ class MoveRecordTest extends TestCase
     {
         $site = Site::factory()->create();
         $section = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
-        $record2  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
-        $record3  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 3]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
+        $record2 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
+        $record3 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 3]);
 
         $response = $this->post("/{$site->id}/section/{$section->id}/data/{$record->id}/right");
         $this->assertDatabaseHas('data', [
@@ -39,9 +39,9 @@ class MoveRecordTest extends TestCase
     {
         $site = Site::factory()->create();
         $section = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
-        $record2  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
-        $record3  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 3]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
+        $record2 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
+        $record3 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 3]);
 
         $response = $this->post("/{$site->id}/section/{$section->id}/data/{$record2->id}/left");
         $this->assertDatabaseHas('data', [
@@ -62,8 +62,8 @@ class MoveRecordTest extends TestCase
     {
         $site = Site::factory()->create();
         $section = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
-        $record2  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
+        $record2 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
 
         $response = $this->post("/{$site->id}/section/{$section->id}/data/{$record->id}/left");
         $this->assertDatabaseHas('data', [
@@ -80,8 +80,8 @@ class MoveRecordTest extends TestCase
     {
         $site = Site::factory()->create();
         $section = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
-        $record2  = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 1]);
+        $record2 = Data::factory()->create(['section_id' => $section->id, 'data' => [], 'sort' => 2]);
 
         $response = $this->post("/{$site->id}/section/{$section->id}/data/{$record2->id}/right");
         $this->assertDatabaseHas('data', [

@@ -6,7 +6,6 @@ use App\Http\Requests\Section\AddSectionRequest;
 use App\Http\Requests\Section\UpdateSectionRequest;
 use App\Models\Section;
 use App\Models\Site;
-use Illuminate\Http\Request;
 
 class SectionController extends Controller
 {

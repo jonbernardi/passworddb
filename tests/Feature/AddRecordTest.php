@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Site;
-use App\Models\Data;
 use App\Models\Section;
+use App\Models\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AddRecordTest extends TestCase
 {
@@ -14,27 +13,27 @@ class AddRecordTest extends TestCase
 
     public function test_adding_new_record()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
         $data = [
             [
-                'name'  => 'field',
+                'name' => 'field',
                 'value' => 'value',
-                'type'  => 'text',
+                'type' => 'text',
             ],
             [
-                'name'  => 'field2',
+                'name' => 'field2',
                 'value' => 'value',
-                'type'  => 'textarea',
+                'type' => 'textarea',
             ],
             [
-                'name'  => 'field3',
+                'name' => 'field3',
                 'value' => true,
-                'type'  => 'boolean',
+                'type' => 'boolean',
             ],
         ];
         $response = $this->post("/{$site->id}/section/{$section->id}/data", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => $data,
         ]);
         $this->assertDatabaseCount('data', 1);
@@ -44,15 +43,15 @@ class AddRecordTest extends TestCase
 
     public function test_heading_is_required()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
         $response = $this->post("/{$site->id}/section/{$section->id}/data", [
-            'name'    => '',
+            'name' => '',
             'records' => [
                 [
-                    'name'  => 'field',
+                    'name' => 'field',
                     'value' => 'value',
-                    'type'  => 'text',
+                    'type' => 'text',
                 ],
             ],
         ]);
@@ -62,15 +61,15 @@ class AddRecordTest extends TestCase
 
     public function test_field_name_is_required()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
         $response = $this->post("/{$site->id}/section/{$section->id}/data", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => [
                 [
-                    'name'  => '',
+                    'name' => '',
                     'value' => 'value',
-                    'type'  => 'text',
+                    'type' => 'text',
                 ],
             ],
         ]);
@@ -80,10 +79,10 @@ class AddRecordTest extends TestCase
 
     public function test_at_least_one_field_required()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
         $response = $this->post("/{$site->id}/section/{$section->id}/data", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => [],
         ]);
         $response->assertSessionHasErrors(['records']);

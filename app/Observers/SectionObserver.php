@@ -9,7 +9,6 @@ class SectionObserver
     /**
      * Listen to the Section deleting event.
      *
-     * @param  Section  $section
      * @return void
      */
     public function deleting(Section $section)

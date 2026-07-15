@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Data;
@@ -22,15 +23,15 @@ class DataFactory extends Factory
     public function definition()
     {
         return [
-            'name'       => $this->faker->text(100),
-            'data'       => function () {
+            'name' => $this->faker->text(100),
+            'data' => function () {
                 $data = [];
-                $num  = random_int(1, 5);
+                $num = random_int(1, 5);
                 for ($i = 1; $i <= $num; $i++) {
                     $data[] = [
                         'name' => $this->faker->text(20),
                         'value' => $this->faker->text(20),
-                        'type' => 'text'
+                        'type' => 'text',
                     ];
                 }
 

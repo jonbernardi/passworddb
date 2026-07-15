@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\Site;
 use App\Models\Data;
 use App\Models\Section;
+use App\Models\Site;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class EditRecordTest extends TestCase
 {
@@ -14,28 +14,28 @@ class EditRecordTest extends TestCase
 
     public function test_updating_records()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'data' => []]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'data' => []]);
         $data = [
             [
-                'name'  => 'field',
+                'name' => 'field',
                 'value' => 'value',
-                'type'  => 'text',
+                'type' => 'text',
             ],
             [
-                'name'  => 'field2',
+                'name' => 'field2',
                 'value' => 'value',
-                'type'  => 'textarea',
+                'type' => 'textarea',
             ],
             [
-                'name'  => 'field3',
+                'name' => 'field3',
                 'value' => true,
-                'type'  => 'boolean',
+                'type' => 'boolean',
             ],
         ];
         $response = $this->patch("/{$site->id}/section/{$section->id}/data/{$record->id}", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => $data,
         ]);
         $record->refresh();
@@ -45,28 +45,28 @@ class EditRecordTest extends TestCase
 
     public function test_that_heading_is_required()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => []]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => []]);
         $data = [
             [
-                'name'  => 'field',
+                'name' => 'field',
                 'value' => 'value',
-                'type'  => 'text',
+                'type' => 'text',
             ],
             [
-                'name'  => 'field2',
+                'name' => 'field2',
                 'value' => 'value',
-                'type'  => 'textarea',
+                'type' => 'textarea',
             ],
             [
-                'name'  => 'field3',
+                'name' => 'field3',
                 'value' => true,
-                'type'  => 'boolean',
+                'type' => 'boolean',
             ],
         ];
         $response = $this->patch("/{$site->id}/section/{$section->id}/data/{$record->id}", [
-            'name'    => '',
+            'name' => '',
             'records' => $data,
         ]);
         $response->assertSessionHasErrors(['name']);
@@ -77,28 +77,28 @@ class EditRecordTest extends TestCase
 
     public function test_that_field_name_is_required()
     {
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => []]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => []]);
         $data = [
             [
-                'name'  => '',
+                'name' => '',
                 'value' => 'value',
-                'type'  => 'text',
+                'type' => 'text',
             ],
             [
-                'name'  => 'field2',
+                'name' => 'field2',
                 'value' => 'value',
-                'type'  => 'textarea',
+                'type' => 'textarea',
             ],
             [
-                'name'  => 'field3',
+                'name' => 'field3',
                 'value' => true,
-                'type'  => 'boolean',
+                'type' => 'boolean',
             ],
         ];
         $response = $this->patch("/{$site->id}/section/{$section->id}/data/{$record->id}", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => $data,
         ]);
         $response->assertSessionHasErrors(['records.0.name']);
@@ -111,27 +111,27 @@ class EditRecordTest extends TestCase
     {
         $data = [
             [
-                'name'  => 'field',
+                'name' => 'field',
                 'value' => 'value',
-                'type'  => 'text',
+                'type' => 'text',
             ],
             [
-                'name'  => 'field2',
+                'name' => 'field2',
                 'value' => 'value',
-                'type'  => 'textarea',
+                'type' => 'textarea',
             ],
             [
-                'name'  => 'field3',
+                'name' => 'field3',
                 'value' => true,
-                'type'  => 'boolean',
+                'type' => 'boolean',
             ],
         ];
 
-        $site     = Site::factory()->create();
-        $section  = Section::factory()->create(['site_id' => $site->id]);
-        $record  = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => $data]);
+        $site = Site::factory()->create();
+        $section = Section::factory()->create(['site_id' => $site->id]);
+        $record = Data::factory()->create(['section_id' => $section->id, 'name' => 'recordname', 'data' => $data]);
         $response = $this->patch("/{$site->id}/section/{$section->id}/data/{$record->id}", [
-            'name'    => 'new record',
+            'name' => 'new record',
             'records' => [],
         ]);
         $response->assertSessionHasErrors(['records']);

@@ -2,12 +2,12 @@
 
 namespace Tests\Browser;
 
-use App\Models\Site;
 use App\Models\Data;
-use Tests\DuskTestCase;
 use App\Models\Section;
+use App\Models\Site;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
 
 class SitePageTest extends DuskTestCase
 {
@@ -26,12 +26,11 @@ class SitePageTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($data, $record, $section, $site) {
             $browser->visit("/{$site->id}")
-                    ->assertSee($site->name)
-                    ->assertSee($section->name)
-                    ->assertSee($record->name)
-                    ->assertSee($data['name'])
-                    ->assertSee($data['value'])
-            ;
+                ->assertSee($site->name)
+                ->assertSee($section->name)
+                ->assertSee($record->name)
+                ->assertSee($data['name'])
+                ->assertSee($data['value']);
         });
     }
 }

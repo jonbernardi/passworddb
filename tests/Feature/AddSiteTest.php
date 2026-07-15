@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Inertia\Testing\Assert;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AddSiteTest extends TestCase
 {
@@ -33,8 +32,7 @@ class AddSiteTest extends TestCase
         $response = $this->post('/');
 
         $response->assertStatus(302)
-                 ->assertSessionHasErrors(['name'])
-        ;
+            ->assertSessionHasErrors(['name']);
 
         $this->assertDatabaseCount('sites', 0);
     }

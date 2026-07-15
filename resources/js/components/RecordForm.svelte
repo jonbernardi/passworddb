@@ -121,13 +121,13 @@
         <div class="mt-4 inline-flex justify-start items-stretch">
 
             <select bind:value="{type}"
-                    class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-l-md">
+                    class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-l-md">
                 <option value="text">Text Input</option>
                 <option value="textarea">Textarea</option>
                 <option value="boolean">Boolean</option>
             </select>
             <button type="button" on:click={addRow}
-                    class="inline-flex items-center whitespace-nowrap px-4 py-2 border border-transparent rounded-r-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    class="inline-flex items-center whitespace-nowrap px-4 py-2 border border-transparent rounded-r-md shadow-xs text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 <Icon src="{Plus}" class="w-5 h-5"/>
                 <span class="ml-2 hidden sm:inline">Add Row</span>
             </button>

@@ -1,6 +1,6 @@
 <script>
     import {createEventDispatcher, onDestroy} from 'svelte';
-    import Transition from 'svelte-class-transition';
+    import { fade, scale } from 'svelte/transition';
 
     const dispatch = createEventDispatcher();
     let isOpen = false;
@@ -86,7 +86,7 @@
 <div class="inline-block">
     <slot name="trigger" open={open}>
         <button type="button" on:click="{open}"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             {triggerText}
         </button>
     </slot>
@@ -106,17 +106,12 @@
                     From: "opacity-100"
                     To: "opacity-0"
                 -->
-                <Transition
-                    inTransition="ease-out duration-300"
-                    inState="opacity-0"
-                    onState="opacity-100"
-                    outState="opacity-0"
-                    outTransition="ease-in duration-200"
-                >
-                    <div
-                        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
-                        on:click|stopPropagation={outsideClick}></div>
-                </Transition>
+                <div
+                    class="fixed inset-0 bg-gray-500/75 transition-opacity"
+                    aria-hidden="true"
+                    on:click|stopPropagation={outsideClick}
+                    transition:fade={{ duration: 200 }}
+                ></div>
 
                 <!-- This element is to trick the browser into centering the modal contents. -->
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
@@ -131,22 +126,16 @@
                     From: "opacity-100 translate-y-0 sm:scale-100"
                     To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 -->
-                <Transition
-                    inTransition="ease-out duration-300"
-                    inState="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    onState="opacity-100 translate-y-0 sm:scale-100"
-                    outState="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    outTransition="ease-in duration-200"
+                <div
+                    bind:this={modal}
+                    class="{width} inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:p-6 w-full"
+                    style="{height}"
+                    transition:scale={{ duration: 200, start: 0.95 }}
                 >
-                    <div
-                        bind:this={modal}
-                        class="{width} inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:p-6 w-full"
-                        style="{height}"
-                    >
                         {#if dismiss}
                             <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                                 <button on:click="{close}" type="button"
-                                        class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Close</span>
                                     <!-- Heroicon name: outline/x -->
                                     <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -176,15 +165,14 @@
                                 <slot name="cancel">
                                     {#if cancel}
                                         <button type="button" on:click={close}
-                                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-xs px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                             Cancel
                                         </button>
                                     {/if}
                                 </slot>
                             </slot>
                         </div>
-                    </div>
-                </Transition>
+                </div>
             </div>
         </div>
     {/if}

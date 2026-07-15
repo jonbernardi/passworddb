@@ -1,5 +1,5 @@
 <script>
-    import {Inertia} from "@inertiajs/inertia";
+    import { router } from '@inertiajs/svelte';
     import { Icon, ArrowLeft, ArrowRight } from "svelte-hero-icons";
 
     export let section;
@@ -9,12 +9,12 @@
 
     function submit(){
         if(disabled) return;
-        Inertia.post(`/${section.site_id}/section/${section.id}/data/${record.id}/${dir}`, {
+        router.post(`/${section.site_id}/section/${section.id}/data/${record.id}/${dir}`, {
             preserveScroll: true
         })
     }
 </script>
-<button type="button" on:click={submit} disabled="{disabled}" class:text-gray-400={disabled} class:text-indigo-700={!disabled} title="{`move ${dir}`}">
+<button type="button" on:click={submit} disabled={disabled} class:text-gray-400={disabled} class:text-indigo-700={!disabled} title={`move ${dir}`}>
     {#if dir === 'left'}
         <Icon src="{ArrowLeft}" class="w-5 h-5"  />
     {:else}

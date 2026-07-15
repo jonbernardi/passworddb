@@ -10,7 +10,7 @@
     export let last;
 </script>
 
-<div class="m-4 border bg-white shadow overflow-hidden sm:rounded-lg w-full md:w-auto md:min-w-[18rem] max-w-full">
+<div class="m-4 border bg-white shadow-sm overflow-hidden sm:rounded-lg w-full md:w-auto md:min-w-[18rem] max-w-full">
     <div class="px-4 py-4 sm:px-6 bg-gray-100 flex justify-between items-center">
         <h3 class="text-lg leading-6 font-medium text-gray-900 truncate" title="{item.name}">
             {item.name}

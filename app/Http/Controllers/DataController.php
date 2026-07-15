@@ -7,14 +7,13 @@ use App\Http\Requests\Data\UpdateDataRequest;
 use App\Models\Data;
 use App\Models\Section;
 use App\Models\Site;
-use Illuminate\Http\Request;
 
 class DataController extends Controller
 {
     public function create(Site $site, Section $section, AddDataRequest $request)
     {
-        $data       = new Data($request->only(['name']));
-        $data->data = $request->get('records', []);
+        $data = new Data($request->only(['name']));
+        $data->data = $request->input('records', []);
         $section->data()->save($data);
 
         return redirect()->route('site', $site);
@@ -22,8 +21,8 @@ class DataController extends Controller
 
     public function update(Site $site, Section $section, Data $data, UpdateDataRequest $request)
     {
-        $data->name = $request->get('name');
-        $data->data = $request->get('records', []);
+        $data->name = $request->input('name');
+        $data->data = $request->input('records', []);
         $data->save();
 
         return redirect()->route('site', $site);

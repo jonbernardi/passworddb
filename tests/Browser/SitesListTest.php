@@ -20,7 +20,7 @@ class SitesListTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
-                    ->assertSee('Password Database');
+                ->assertSee('Password Database');
         });
     }
 
@@ -31,8 +31,8 @@ class SitesListTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($first, $second) {
             $browser->visit('/')
-                    ->assertSee($first->name)
-                    ->assertSee($second->name);
+                ->assertSee($first->name)
+                ->assertSee($second->name);
         });
     }
 
@@ -43,9 +43,9 @@ class SitesListTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($first, $second) {
             $browser->visit('/')
-                    ->type('s', 'first')
-                    ->assertSee($first->name)
-                    ->assertDontSee($second->name);
+                ->type('s', 'first')
+                ->assertSee($first->name)
+                ->assertDontSee($second->name);
         });
     }
 }

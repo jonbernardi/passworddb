@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Data;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AddDataRequest extends FormRequest
 {
@@ -27,7 +27,7 @@ class AddDataRequest extends FormRequest
         return [
             'name' => ['required', 'max:191'],
             'records' => ['required', 'array', 'min:1'],
-            'records.*.type' => ['required', Rule::in(['text','textarea','boolean'])],
+            'records.*.type' => ['required', Rule::in(['text', 'textarea', 'boolean'])],
             'records.*.name' => ['required', 'max:191'],
             'records.*.value' => ['nullable'],
         ];

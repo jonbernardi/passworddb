@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Site;
@@ -23,8 +24,7 @@ class SiteFactory extends Factory
         return [
             'name' => $this->faker->text(100),
             'domain' => $this->faker->domainName,
-            'notes' => $this->faker->paragraph
+            'notes' => $this->faker->paragraph,
         ];
     }
 }
-

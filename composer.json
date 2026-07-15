@@ -5,23 +5,22 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "inertiajs/inertia-laravel": "^0.4.1",
-        "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5",
-        "spatie/eloquent-sortable": "^4.0"
+        "php": "^8.3",
+        "guzzlehttp/guzzle": "^7.14",
+        "inertiajs/inertia-laravel": "^3.1",
+        "laravel/framework": "^13.20",
+        "laravel/tinker": "^3.0",
+        "spatie/eloquent-sortable": "^5.0.1"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/dusk": "^6.19",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "fakerphp/faker": "^1.24",
+        "laravel/dusk": "^8.6",
+        "laravel/pint": "^1.29",
+        "laravel/sail": "^1.63",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.9",
+        "phpunit/phpunit": "^12.5",
+        "spatie/laravel-ignition": "^2.12"
     },
     "autoload": {
         "psr-4": {
@@ -36,6 +35,12 @@
         }
     },
     "scripts": {
+        "format": [
+            "pint"
+        ],
+        "format:test": [
+            "pint --test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -55,8 +60,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.4.0"
+        }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true
 }
