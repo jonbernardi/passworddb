@@ -37,7 +37,7 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist
 
       - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prod=false
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
