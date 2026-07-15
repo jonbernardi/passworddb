@@ -41,6 +41,9 @@ importers:
       tailwindcss-tables:
         specifier: ^0.4.0
         version: 0.4.0
+      vite:
+        specifier: ^8.1.4
+        version: 8.1.4(jiti@2.7.0)
 
 packages:
 
