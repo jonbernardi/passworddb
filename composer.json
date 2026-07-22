@@ -6,9 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "guzzlehttp/guzzle": "^7.14",
+        "guzzlehttp/guzzle": "^7.15.1",
         "inertiajs/inertia-laravel": "^3.1",
-        "laravel/framework": "^13.20",
+        "laravel/framework": "^13.21",
         "laravel/tinker": "^3.0",
         "spatie/eloquent-sortable": "^5.0.1"
     },
