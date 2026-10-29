@@ -4,8 +4,8 @@
     import Modal from "./Modal.svelte";
     import FormField from "./FormField.svelte";
 
-    let modal;
-    let form = useForm({
+    let modal = $state();
+    const form = useForm({
         name: '',
         domain: '',
         url: '',
@@ -13,11 +13,11 @@
     });
 
     function submit() {
-        $form.post('/', {onSuccess: modal.close});
+        form.post('/', {onSuccess: modal.close});
     }
 </script>
 <form method="post" on:submit|preventDefault={submit}>
-    <Modal title="Add Site" bind:this={modal} on:closed={() => $form.reset()}>
+    <Modal title="Add Site" bind:this={modal} on:closed={() => form.reset()}>
         <div let:open={open} slot="trigger">
             <button dusk="add-site" on:click={open} type="button"
                     class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -36,27 +36,27 @@
             <FormField
                 label="Name"
                 id="site-add-name"
-                form="{$form}"
+                form="{form}"
                 field="name"
-                bind:value={$form.name}
+                bind:value={form.name}
                 required
                 maxlength="191"
             />
             <FormField
                 label="Domain"
                 id="site-add-domain"
-                form="{$form}"
+                form="{form}"
                 field="domain"
-                bind:value={$form.domain}
+                bind:value={form.domain}
                 maxlength="191"
             />
             <FormField
                 type="url"
                 label="Url"
                 id="site-add-url"
-                form="{$form}"
+                form="{form}"
                 field="url"
-                bind:value={$form.url}
+                bind:value={form.url}
                 maxlength="191"
                 placeholder="https://"
             />
@@ -64,9 +64,9 @@
                 type="textarea"
                 label="Notes"
                 id="site-add-notes"
-                form="{$form}"
+                form="{form}"
                 field="notes"
-                bind:value={$form.notes}
+                bind:value={form.notes}
                 rows="6"
             />
         </div>

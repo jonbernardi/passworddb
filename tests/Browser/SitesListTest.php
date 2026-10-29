@@ -48,4 +48,27 @@ class SitesListTest extends DuskTestCase
                 ->assertDontSee($second->name);
         });
     }
+
+    public function test_navigation_between_sites_and_details()
+    {
+        $site = Site::factory()->create(['name' => 'Navigation test site']);
+
+        $this->browse(function (Browser $browser) use ($site) {
+            $browser->visit('/')
+                ->waitForLink('Details')
+                ->clickLink('Details')
+                ->waitForText('Edit Site')
+                ->assertPathIs("/{$site->id}")
+                ->assertSeeIn('h1', $site->name)
+                ->clickLink('Back')
+                ->waitForLink('Details')
+                ->assertPathIs('/')
+                ->assertSeeIn('h1', 'Sites')
+                ->clickLink('Details')
+                ->waitForText('Edit Site')
+                ->clickLink('Password Database')
+                ->waitForLink('Details')
+                ->assertPathIs('/');
+        });
+    }
 }

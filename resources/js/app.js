@@ -6,15 +6,8 @@ import Layout from './components/Layout.svelte';
 const pages = import.meta.glob('./Pages/**/*.svelte');
 
 createInertiaApp({
-    resolve: async (name) => {
-        const page = await pages[`./Pages/${name}.svelte`]();
-
-        if (page.default.layout === undefined) {
-            page.default.layout = Layout;
-        }
-
-        return page;
-    },
+    layout: () => Layout,
+    resolve: (name) => pages[`./Pages/${name}.svelte`](),
     setup({ el, App, props }) {
         mount(App, {
             target: el,

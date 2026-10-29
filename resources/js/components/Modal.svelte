@@ -1,6 +1,5 @@
 <script>
-    import {createEventDispatcher, onDestroy} from 'svelte';
-    import { fade, scale } from 'svelte/transition';
+    import {createEventDispatcher, tick} from 'svelte';
 
     const dispatch = createEventDispatcher();
     let isOpen = false;
@@ -30,59 +29,55 @@
         }
     })(size);
 
-    $: height = scrollable  ? 'max-height:calc(100vh - 4rem)' : '';
+    let pointerStartedOnBackdrop = false;
 
-    export function open() {
-        if (disabled) return;
-        dispatch('open')
+    export async function open() {
+        if (disabled || isOpen) return;
+        dispatch('open');
         isOpen = true;
-        dispatch('opened')
+        await tick();
+        if (!isOpen || !modal?.isConnected) return;
+        modal.showModal();
+        dispatch('opened');
     }
 
     export function close() {
-        dispatch('close')
+        if (!isOpen) return;
+        dispatch('close');
+        modal.close();
         isOpen = false;
-        dispatch('closed')
+        dispatch('closed');
     }
 
-    function outsideClick(e){
-        if (!persistent) {
+    function handleClose() {
+        // Also handle a dialog closed directly through the native API.
+        if (modal.open || !isOpen) return;
+        dispatch('close');
+        isOpen = false;
+        dispatch('closed');
+    }
+
+    function handleCancel(event) {
+        event.preventDefault();
+        if (dismiss && !persistent) close();
+    }
+
+    function isBackdrop(event) {
+        if (event.target !== modal) return false;
+        const rect = modal.getBoundingClientRect();
+        return event.clientX < rect.left || event.clientX > rect.right
+            || event.clientY < rect.top || event.clientY > rect.bottom;
+    }
+
+    function outsideClick(event) {
+        if (pointerStartedOnBackdrop && isBackdrop(event) && !persistent) {
+            event.stopPropagation();
             close();
         }
+        pointerStartedOnBackdrop = false;
     }
 
-    const handle_keydown = e => {
-        if (!dismiss || persistent) return;
-        if (e.key === 'Escape') {
-            close();
-            return;
-        }
-
-        if (e.key === 'Tab') {
-            // trap focus
-            const nodes = modal.querySelectorAll('*');
-            const tabbable = Array.from(nodes).filter(n => n.tabIndex >= 0);
-
-            let index = tabbable.indexOf(document.activeElement);
-            if (index === -1 && e.shiftKey) index = 0;
-
-            index += tabbable.length + (e.shiftKey ? -1 : 1);
-            index %= tabbable.length;
-
-            tabbable[index].focus();
-            e.preventDefault();
-        }
-    };
-
-    const previously_focused = typeof document !== 'undefined' && document.activeElement;
-
-    if (previously_focused) {
-        onDestroy(() => {
-            previously_focused.focus();
-        });
-    }
 </script>
-<svelte:window on:keydown={handle_keydown}/>
 <div class="inline-block">
     <slot name="trigger" open={open}>
         <button type="button" on:click="{open}"
@@ -91,89 +86,57 @@
         </button>
     </slot>
 
-    {#if isOpen}
-
-        <div id="{id}" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title-{id}" role="dialog"
-             aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!--
-                  Background overlay, show/hide based on modal state.
-
-                  Entering: "ease-out duration-300"
-                    From: "opacity-0"
-                    To: "opacity-100"
-                  Leaving: "ease-in duration-200"
-                    From: "opacity-100"
-                    To: "opacity-0"
-                -->
-                <div
-                    class="fixed inset-0 bg-gray-500/75 transition-opacity"
-                    aria-hidden="true"
-                    on:click|stopPropagation={outsideClick}
-                    transition:fade={{ duration: 200 }}
-                ></div>
-
-                <!-- This element is to trick the browser into centering the modal contents. -->
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <!--
-                  Modal panel, show/hide based on modal state.
-
-                  Entering: "ease-out duration-300"
-                    From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    To: "opacity-100 translate-y-0 sm:scale-100"
-                  Leaving: "ease-in duration-200"
-                    From: "opacity-100 translate-y-0 sm:scale-100"
-                    To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                -->
-                <div
-                    bind:this={modal}
-                    class="{width} inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:p-6 w-full"
-                    style="{height}"
-                    transition:scale={{ duration: 200, start: 0.95 }}
-                >
-                        {#if dismiss}
-                            <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
-                                <button on:click="{close}" type="button"
-                                        class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    <span class="sr-only">Close</span>
-                                    <!-- Heroicon name: outline/x -->
-                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                         viewBox="0 0 24 24"
-                                         stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
+    <dialog
+        bind:this={modal}
+        {id}
+        aria-labelledby={title ? `modal-title-${id}` : undefined}
+        class="{width} m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] rounded-lg bg-white p-0 text-left shadow-xl backdrop:bg-gray-500/75"
+        on:cancel={handleCancel}
+        on:close={handleClose}
+        on:pointerdown={(event) => pointerStartedOnBackdrop = isBackdrop(event)}
+        on:click={outsideClick}
+    >
+        {#if isOpen}
+            <div class="relative px-4 pt-5 pb-4 sm:p-6" class:flex={scrollable} class:flex-col={scrollable}
+                 style={scrollable ? 'max-height:calc(100dvh - 2rem)' : undefined}>
+                {#if dismiss}
+                    <div class="absolute top-0 right-0 pt-4 pr-4">
+                        <button on:click={close} type="button"
+                                class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                {/if}
+                <div class="mt-3 min-h-0 w-full text-center sm:mt-0 sm:text-left"
+                     class:flex={scrollable} class:flex-col={scrollable}>
+                    {#if title}
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title-{id}">
+                            {title}
+                        </h3>
+                    {/if}
+                    <div class="mt-2 text-left text-sm text-gray-500" class:overflow-y-auto={scrollable}>
+                        <slot/>
+                    </div>
+                </div>
+                <div class="mt-5 shrink-0 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <slot name="actions">
+                        <slot name="submit"></slot>
+                        <slot name="cancel">
+                            {#if cancel}
+                                <button type="button" on:click={close}
+                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-xs px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
                                 </button>
-                            </div>
-                        {/if}
-                        <div>
-                            <div class="w-full mt-3 text-center sm:mt-0 sm:text-left">
-                                {#if title}
-                                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title-{id}">
-                                        {title}
-                                    </h3>
-                                {/if}
-                                <div class="mt-2 text-sm text-gray-500 text-left" class:overflow-y-auto={scrollable}>
-                                    <slot/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                            <slot name="actions">
-                                <slot name="submit"></slot>
-                                <slot name="cancel">
-                                    {#if cancel}
-                                        <button type="button" on:click={close}
-                                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-xs px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                            Cancel
-                                        </button>
-                                    {/if}
-                                </slot>
-                            </slot>
-                        </div>
+                            {/if}
+                        </slot>
+                    </slot>
                 </div>
             </div>
-        </div>
-    {/if}
+        {/if}
+    </dialog>
 </div>
