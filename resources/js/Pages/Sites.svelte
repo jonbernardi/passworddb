@@ -14,7 +14,7 @@
     }
 
     function sortByScore(items) {
-        return [...items].sort((a, b) => a.score - b.score);
+        return [...items].sort((a, b) => (a.score === b.score) ? a.name.localeCompare(b.name) :  a.score - b.score);
     }
 
     $: sites = (() => {
