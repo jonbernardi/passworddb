@@ -1,23 +1,41 @@
 {
-    "private": true,
-    "type": "module",
-    "packageManager": "pnpm@11.21.0",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build"
-    },
-    "devDependencies": {
-        "@inertiajs/svelte": "^3.7.0",
-        "@inertiajs/vite": "^3.7.0",
-        "@sveltejs/vite-plugin-svelte": "^7.3.0",
-        "@tailwindcss/forms": "^0.5.11",
-        "@tailwindcss/vite": "^4.3.3",
-        "fuzzy-tools": "^3.0.0",
-        "laravel-vite-plugin": "^3.2.0",
-        "svelte": "^5.56.10",
-        "svelte-hero-icons": "^5.2.0",
-        "tailwindcss": "^4.3.3",
-        "tailwindcss-tables": "^0.4.0",
-        "vite": "^8.2.2"
-    }
+  "name": "vue",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --config vitest.config.ts",
+    "test:client": "vitest run --config vitest.config.ts --project client",
+    "test:client:unit": "vitest run --config vitest.config.ts --project client tests/client/services",
+    "test:client:components": "vitest run --config vitest.config.ts --project client tests/client/components",
+    "test:client:watch": "vitest --config vitest.config.ts --project client",
+    "test:client:coverage": "vitest run --config vitest.config.ts --project client --coverage --coverage.include=src/client/services/**/*.ts --coverage.include=src/client/components/**/*.vue --coverage.include=src/client/App.vue --coverage.reportsDirectory=coverage/client",
+    "test:server": "vitest run --config vitest.config.ts --project server",
+    "test:server:unit": "vitest run --config vitest.config.ts --project server tests/server/unit",
+    "test:server:feature": "vitest run --config vitest.config.ts --project server tests/server/feature",
+    "test:server:coverage": "vitest run --config vitest.config.ts --project server --coverage --coverage.include=src/server/** --coverage.reportsDirectory=coverage/server",
+    "build": "vite build",
+    "dev": "vite dev",
+    "deploy": "pnpm build && wrangler deploy --minify",
+    "db:migrate": "wrangler d1 migrations apply DB --local",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.9.1",
+    "@vueuse/router": "^15.0.0",
+    "fuzzy-tools": "^3.0.0",
+    "hono": "^4.13.14",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.66.0",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "@vitest/coverage-v8": "5.1.0",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^30.1.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.110.0"
+  },
+  "packageManager": "pnpm@12.16.1+sha512.091d1dee7927575661b25dab3c2ae31cafc1c54d6b71ed6a6600cf0c1cb10434a447eae14015f1b23e2e6bedeed79df94a932e2164d2832280dce3fb32f656d1"
 }
