@@ -85,26 +85,58 @@ end-to-end tests remain a separate layer.
 
 ## Cloudflare deployment
 
-The app is deployed at https://passworddb.spekkionu.workers.dev as the `passworddb` Worker.
-`wrangler.jsonc` contains the Cloudflare account and D1 database IDs. Vite builds the Worker
-and SPA separately; Wrangler automatically uses the generated deployment configuration.
+To deploy your own copy, fork this repository and configure a Worker and D1 database in your
+Cloudflare account. Install the dependencies with `pnpm install`, then sign in:
 
 ```sh
 pnpm exec wrangler login
-pnpm exec wrangler d1 migrations apply DB --remote --config wrangler.jsonc
-pnpm run deploy
+pnpm exec wrangler whoami
+pnpm exec wrangler d1 create passworddb
 ```
 
-Production `ENCRYPTION_KEY` is stored as a Worker secret. An owner-readable backup is saved
-locally in the ignored `.env.production` file. Back it up securely: existing encrypted records
-require the same key. Ordinary deploys preserve the existing Worker secret. For the first
-deployment from a new account, upload it with:
+Update `wrangler.jsonc` in your fork:
+
+- Replace `account_id` with your account ID, shown by `wrangler whoami`.
+- Replace the existing `d1_databases` entry's `database_id` with the ID returned when creating
+  your database. Keep its binding named `DB` and its `migrations_dir` set to `migrations`.
+- If you chose a different database name, update `database_name` to match.
+- Optionally change `name` from `passworddb` to your preferred Worker name.
+
+If Wrangler offers to update the configuration when creating the database, review the result
+and make sure there is only one D1 binding named `DB`, pointing to your own database.
+
+Apply the migrations to your remote database, then commit and push your configuration changes:
 
 ```sh
-pnpm build
-pnpm exec wrangler deploy --secrets-file .env.production
+pnpm exec wrangler d1 migrations apply DB --remote --config wrangler.jsonc
 ```
 
-Local `.dev.vars` and local database records are separate from production. The initial
-production database contains no records. The app currently has no login protection; configure
-Cloudflare Access before storing real credentials.
+In the Cloudflare dashboard, create a Worker by importing your fork through the Git integration.
+Use the same Worker name as `name` in `wrangler.jsonc`, and configure:
+
+- **Build command:** `pnpm run build`
+- **Deploy command:** `pnpm exec wrangler deploy`
+- **Root directory:** the repository root
+
+Vite builds the Worker and SPA separately; Wrangler automatically uses the generated deployment
+configuration. Subsequent pushes to your configured production branch build and deploy your
+Worker. Apply any new database migrations with the remote migration command above before
+deploying code that requires them.
+
+Before using the deployed app, generate your own base64-encoded 32-byte encryption key:
+
+```sh
+openssl rand -base64 32
+```
+
+In your Worker's **Settings > Variables & Secrets**, add `ENCRYPTION_KEY` as a **Secret** with
+that value and deploy the settings change. This is a runtime secret, not a build variable.
+Back it up securely: existing encrypted records require the same key. Do not commit it to
+your fork. Ordinary code deploys preserve the existing Worker secret.
+
+You can also deploy from your local checkout with `pnpm run deploy` after configuring your
+account and database. Local `.dev.vars` and local database records are separate from production;
+local records are not uploaded during deployment.
+
+The app currently has no login protection; configure Cloudflare Access before storing real
+credentials.
