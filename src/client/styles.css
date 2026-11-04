@@ -208,9 +208,26 @@ svg { display: block; }
     text-align: left;
     box-shadow: var(--shadow-dialog);
     overflow-y: auto;
+    opacity: 0;
+    translate: 0 10px;
+    transition: opacity 300ms ease-in-out, translate 300ms ease-in-out,
+        display 300ms ease-in-out, overlay 300ms ease-in-out;
+    transition-behavior: allow-discrete;
 }
 .dialog:not([open]) { display: none; }
-.dialog::backdrop { background: var(--color-backdrop); }
+.dialog[open] { opacity: 1; translate: 0 0; }
+.dialog::backdrop {
+    background-color: transparent;
+    transition: background-color 300ms ease-in-out,
+        display 300ms ease-in-out, overlay 300ms ease-in-out;
+    transition-behavior: allow-discrete;
+}
+.dialog[open]::backdrop { background-color: var(--color-backdrop); }
+/* Enter from the closed state when showModal() makes the dialog visible. */
+@starting-style {
+    .dialog[open] { opacity: 0; translate: 0 10px; }
+    .dialog[open]::backdrop { background-color: transparent; }
+}
 .dialog__wrapper { position: relative; padding: var(--space-5) var(--space-4) var(--space-4); }
 .dialog__close { position: absolute; top: var(--space-4); right: var(--space-4); }
 .dialog__close__button { display: flex; padding: 0; border: 0; border-radius: var(--radius); background: var(--color-surface); color: var(--color-disabled); }
@@ -248,7 +265,7 @@ svg { display: block; }
 .form-input:disabled { background: var(--color-hover); color: var(--color-muted); cursor: default; }
 .form-input--textarea { resize: vertical; }
 .form-input--select { padding-right: var(--space-8); }
-.form-input--invalid, .field:has(.field__errors) .form-input { border-color: var(--color-boolean-false); color: var(--color-danger-hover); }
+.form-input--invalid, .form-input:user-invalid, .field:has(.field__errors) .form-input { border-color: var(--color-boolean-false); color: var(--color-danger-hover); }
 .field__errors, .field__help { margin-top: var(--space-2); font-size: var(--font-small); line-height: var(--line-small); }
 .field__errors { color: var(--color-danger); }
 .field__help { color: var(--color-muted); }
@@ -330,5 +347,5 @@ svg { display: block; }
 @media (min-width: 1280px) { .container { max-width: 80rem; } }
 @media (min-width: 1536px) { .container { max-width: 96rem; } }
 @media (prefers-reduced-motion: reduce) {
-    .form-switch, .form-switch__icon { transition: none; }
+    .dialog, .dialog::backdrop, .form-switch, .form-switch__icon { transition: none; }
 }

@@ -1,16 +1,21 @@
 ```txt
-npm install
-npm run dev
+pnpm install
+pnpm run db:migrate
+pnpm run dev
 ```
 
+Run `pnpm run db:migrate` to initialize the local D1 database before starting development.
+Run it again after adding migrations or changing the configured database ID, which selects
+a separate local database. This command applies pending migrations locally only.
+
 ```txt
-npm run deploy
+pnpm run deploy
 ```
 
 [For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
 
 ```txt
-npm run cf-typegen
+pnpm run cf-typegen
 ```
 
 Pass the `CloudflareBindings` as generics when instantiating `Hono`:
@@ -26,16 +31,16 @@ Use Node.js 24 or newer (the server feature tests use `node:sqlite`). All tests 
 After installing the project dependencies:
 
 ```sh
-npm test                       # All Vitest projects (client and server)
-npm run test:client            # All Vitest client tests
-npm run test:client:unit       # API service unit tests
-npm run test:client:components # Vue component tests
-npm run test:client:watch      # Vitest watch mode
-npm run test:client:coverage   # Client coverage (text and coverage/client/index.html)
-npm run test:server            # All server tests
-npm run test:server:unit       # Crypto and repository unit tests
-npm run test:server:feature    # API feature tests
-npm run test:server:coverage   # Server coverage (text and coverage/server/index.html)
+pnpm test                       # All Vitest projects (client and server)
+pnpm run test:client            # All Vitest client tests
+pnpm run test:client:unit       # API service unit tests
+pnpm run test:client:components # Vue component tests
+pnpm run test:client:watch      # Vitest watch mode
+pnpm run test:client:coverage   # Client coverage (text and coverage/client/index.html)
+pnpm run test:server            # All server tests
+pnpm run test:server:unit       # Crypto and repository unit tests
+pnpm run test:server:feature    # API feature tests
+pnpm run test:server:coverage   # Server coverage (text and coverage/server/index.html)
 ```
 
 - `tests/server/unit/crypto.test.mjs` checks encrypted round-trips, random IVs, key validation,
@@ -77,3 +82,29 @@ The only shared browser shim models native dialog lifecycle events missing from 
 focus test supplies an element rectangle because jsdom does not calculate layout. These tests
 verify DOM behavior, not CSS layout or real-browser dialog/clipboard permissions. Browser
 end-to-end tests remain a separate layer.
+
+## Cloudflare deployment
+
+The app is deployed at https://passworddb.spekkionu.workers.dev as the `passworddb` Worker.
+`wrangler.jsonc` contains the Cloudflare account and D1 database IDs. Vite builds the Worker
+and SPA separately; Wrangler automatically uses the generated deployment configuration.
+
+```sh
+pnpm exec wrangler login
+pnpm exec wrangler d1 migrations apply DB --remote --config wrangler.jsonc
+pnpm run deploy
+```
+
+Production `ENCRYPTION_KEY` is stored as a Worker secret. An owner-readable backup is saved
+locally in the ignored `.env.production` file. Back it up securely: existing encrypted records
+require the same key. Ordinary deploys preserve the existing Worker secret. For the first
+deployment from a new account, upload it with:
+
+```sh
+pnpm build
+pnpm exec wrangler deploy --secrets-file .env.production
+```
+
+Local `.dev.vars` and local database records are separate from production. The initial
+production database contains no records. The app currently has no login protection; configure
+Cloudflare Access before storing real credentials.

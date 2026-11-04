@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "passworddb",
+  "account_id": "95dcc6b7c4b3f0f2009d6306086c9ee2",
   "main": "src/server/index.ts",
   "compatibility_date": "2026-10-29",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,6 +15,7 @@
     {
       "binding": "DB",
       "database_name": "passworddb",
+      "database_id": "a0fa6dbc-003f-4c78-a97f-081b05f6089a",
       "migrations_dir": "migrations"
     }
   ],
